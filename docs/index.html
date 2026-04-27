@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>海外内容运营 AI 面板（合规版）</title>
+  <style>
+    :root { color-scheme: light; --bg:#f7f8fc; --card:#fff; --text:#222; --muted:#666; --primary:#4f46e5; --primary-hover:#4338ca; --border:#e5e7eb; --ok:#047857; --warn:#b45309; --danger:#b91c1c }
+    * { box-sizing: border-box }
+    body { margin:0; font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.5 }
+    .container{max-width:920px;margin:40px auto;padding:0 16px 40px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,0.04)}
+    h1{margin:0 0 10px;font-size:26px}
+    .desc{margin:0 0 20px;color:var(--muted);font-size:14px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+    .tab{background:#f1f5ff;color:#1f2a62;border:1px solid #dfe6ff;padding:9px 12px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer}
+    .tab[aria-selected="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+    .panel{display:none;margin-top:14px}.panel.active{display:block}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field label{display:block;margin-bottom:6px;font-size:14px;font-weight:600}
+    .field input,.field select,textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:11px 12px;font-size:14px;outline:none;background:#fff}
+    textarea{min-height:140px;resize:vertical;line-height:1.45}
+    .actions{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+    button{border:0;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
+    .btn-main{background:var(--primary);color:#fff}.btn-sub{background:#eceffb;color:#2b2f4a}.btn-danger{background:#fee2e2;color:#7f1d1d}
+    .meta{margin-top:10px;font-size:13px;color:var(--ok);min-height:20px}
+    .meta.warn{color:var(--warn)}.meta.danger{color:var(--danger)}
+    .result{margin-top:20px;display:grid;gap:12px}.idea{border:1px solid var(--border);border-radius:12px;padding:14px;background:#fff}
+    @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="topbar">
+        <h1>海外内容运营 AI 面板（合规版）</h1>
+        <div class="actions" style="margin-top:0"><button id="openSettingsBtn" class="btn-sub">大模型接口设置</button></div>
+      </div>
+      <p class="desc">合规前提：数据都由你<strong>手动粘贴</strong>（自有评价/公开评论/公开链接），工具只做分析与总结，不做任何“扒取”。未配置 API Key 时也能用：会输出<strong>可复制提示词</strong>，你可粘贴到任何大模型对话框继续扩写。</p>
+      <div class="tabs" role="tablist" aria-label="功能切换">
+        <button class="tab" id="tab-ideas" role="tab" aria-selected="true" aria-controls="panel-ideas">脚本灵感</button>
+        <button class="tab" id="tab-emotion" role="tab" aria-selected="false" aria-controls="panel-emotion">情绪翻译官</button>
+        <button class="tab" id="tab-competitor" role="tab" aria-selected="false" aria-controls="panel-competitor">竞品弱点雷达</button>
+        <button class="tab" id="tab-hotspots" role="tab" aria-selected="false" aria-controls="panel-hotspots">本土化热点日历</button>
+      </div>
+      <div id="panel-ideas" class="panel active" role="tabpanel" aria-labelledby="tab-ideas">
+        <p class="desc" style="margin-top:0">输入目标市场与品类，生成可直接拍的 TikTok 脚本拆解与“可喂给 AI 的提示词”。</p>
+        <div class="grid">
+          <div class="field"><label for="country">目标国家</label><input id="country" placeholder="例如：墨西哥 / 美国 / 英国" /></div>
+          <div class="field"><label for="category">产品品类</label><input id="category" placeholder="例如：美妆 / 3C / 家居" /></div>
+          <div class="field"><label for="count">生成条数</label><select id="count"><option value="3">3 条</option><option value="5" selected>5 条</option><option value="8">8 条</option></select></div>
+          <div class="field"><label for="tone">脚本风格</label><select id="tone"><option value="实用测评">实用测评</option><option value="反差剧情">反差剧情</option><option value="开箱种草">开箱种草</option><option value="挑战互动">挑战互动</option></select></div>
+        </div>
+        <div class="actions"><button id="generateBtn" class="btn-main">生成灵感</button><button id="copyBtn" class="btn-sub">复制全部结果</button></div>
+        <div id="status" class="meta"></div>
+        <div id="result" class="result"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // 精简版 JS：仅保留基础交互与本地设置加载（完整逻辑在源仓库）
+    const STORAGE_KEYS = { apiBaseUrl: 'ops_panel_api_base_url', apiModel: 'ops_panel_api_model', apiKey: 'ops_panel_api_key' };
+    function loadSettings(){ const base = localStorage.getItem(STORAGE_KEYS.apiBaseUrl) || (location.protocol==='file:'? 'https://api.openai.com/v1' : `${location.origin}/api`); document.getElementById('status').textContent=''; }
+    document.addEventListener('DOMContentLoaded', ()=>{ loadSettings(); });
+  </script>
+</body>
+</html>
