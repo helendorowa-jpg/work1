@@ -20,6 +20,9 @@ exports.handler = async function(event, context) {
       return { statusCode: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'fetch 未就绪，请安装 node-fetch 或使用支持 fetch 的 Node 运行时' }) };
     }
 
+    // 调试信息：打印接收到的 payload（不包含 apiKey）
+    console.error('AI gateway payload:', Object.assign({}, body, { apiKey: undefined }));
+
     const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
       method: 'POST',
       headers: {
@@ -29,7 +32,22 @@ exports.handler = async function(event, context) {
       body: JSON.stringify(body)
     });
 
-    const data = await response.json();
+    const respText = await response.text();
+    console.error('Upstream status:', response.status, 'body:', respText);
+
+    // 尝试解析为 JSON，否则把原文返回以便调试
+    let data;
+    try { data = JSON.parse(respText); } catch (e) { data = { raw: respText }; }
+
+    // 若上游返回非 200，返回详细信息以便定位问题（临时调试）
+    if (!response.ok) {
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Upstream API error', status: response.status, body: data })
+      };
+    }
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
