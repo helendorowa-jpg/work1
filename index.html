@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>海外内容运营 AI 面板（合规版）</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fc;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --border: #e5e7eb;
+      --ok: #047857;
+      --warn: #b45309;
+      --danger: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 40px auto;
+      padding: 0 16px 40px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 26px;
+    }
+
+    .desc {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 6px;
+    }
+
+    .tab {
+      background: #f1f5ff;
+      color: #1f2a62;
+      border: 1px solid #dfe6ff;
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .panel {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-main:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-sub {
+      background: #eceffb;
+      color: #2b2f4a;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--ok);
+      min-height: 20px;
+    }
+
+    .meta.warn {
+      color: var(--warn);
+    }
+
+    .meta.danger {
+      color: var(--danger);
+    }
+
+    .result {
+      margin-top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .idea {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .idea h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .idea p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .kpi {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .kpi .label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .kpi .value {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .bar {
+      height: 10px;
+      background: #eef2ff;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .bar > div {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #111827;
+    }
+
+    .chip[data-weight="5"] { font-size: 16px; font-weight: 800; }
+    .chip[data-weight="4"] { font-size: 15px; font-weight: 750; }
+    .chip[data-weight="3"] { font-size: 14px; font-weight: 700; }
+    .chip[data-weight="2"] { font-size: 13px; font-weight: 650; }
+    .chip[data-weight="1"] { font-size: 12px; font-weight: 600; }
+
+    .list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .list li {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    dialog {
+      width: min(720px, calc(100vw - 24px));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .dialog-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dialog-head h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .dialog-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .dialog-foot {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="topbar">
+        <h1>海外内容运营 AI 面板（合规版）</h1>
+        <div class="actions" style="margin-top:0">
+          <button id="openSettingsBtn" class="btn-sub">大模型接口设置</button>
+        </div>
+      </div>
+      <p class="desc">
+        合规前提：数据都由你<strong>手动粘贴</strong>（自有评价/公开评论/公开链接），工具只做分析与总结，不做任何“扒取”。
+        未配置 API Key 时也能用：会输出<strong>可复制提示词</strong>，你可粘贴到任何大模型对话框继续扩写。
+      </p>
+      <p class="desc" style="margin-top:-10px">
+        若你从本地文件直接双击打开，遇到“跨域/CORS”导致无法调用 API：用本地服务器打开即可（示例命令见“设置”里的提示）。
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="功能切换">
+        <button class="tab" id="tab-ideas" role="tab" aria-selected="true" aria-controls="panel-ideas">脚本灵感</button>
+        <button class="tab" id="tab-emotion" role="tab" aria-selected="false" aria-controls="panel-emotion">情绪翻译官</button>
+        <button class="tab" id="tab-competitor" role="tab" aria-selected="false" aria-controls="panel-competitor">竞品弱点雷达</button>
+        <button class="tab" id="tab-hotspots" role="tab" aria-selected="false" aria-controls="panel-hotspots">本土化热点日历</button>
+      </div>
+
+      <div id="panel-ideas" class="panel active" role="tabpanel" aria-labelledby="tab-ideas">
+        <p class="desc" style="margin-top:0">
+          输入目标市场与品类，生成可直接拍的 TikTok 脚本拆解与“可喂给 AI 的提示词”。
+        </p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="country">目标国家</label>
+            <input id="country" placeholder="例如：墨西哥 / 美国 / 英国" />
+          </div>
+          <div class="field">
+            <label for="category">产品品类</label>
+            <input id="category" placeholder="例如：美妆 / 3C / 家居" />
+          </div>
+          <div class="field">
+            <label for="count">生成条数</label>
+            <select id="count">
+              <option value="3">3 条</option>
+              <option value="5" selected>5 条</option>
+              <option value="8">8 条</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tone">脚本风格</label>
+            <select id="tone">
+              <option value="实用测评">实用测评</option>
+              <option value="反差剧情">反差剧情</option>
+              <option value="开箱种草">开箱种草</option>
+              <option value="挑战互动">挑战互动</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ideaMode">生成方式</label>
+            <select id="ideaMode">
+              <option value="model" selected>优先用大模型（失败则兜底）</option>
+              <option value="local">只用本地模板（更快）</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ideaTemp">创意强度（更像真人会更“发散”）</label>
+            <input id="ideaTemp" type="number" min="0" max="1" step="0.05" value="0.75" />
+          </div>
+          <div class="field">
+            <label for="ideaVoice">口吻偏好</label>
+            <select id="ideaVoice">
+              <option value="更口语、更像本地人">更口语、更像本地人</option>
+              <option value="更专业、更像测评博主">更专业、更像测评博主</option>
+              <option value="更搞笑、更像段子手">更搞笑、更像段子手</option>
+              <option value="更剧情、更像短剧">更剧情、更像短剧</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="generateBtn" class="btn-main">生成灵感</button>
+          <button id="copyBtn" class="btn-sub">复制全部结果</button>
+        </div>
+
+        <div id="status" class="meta"></div>
+        <div id="result" class="result"></div>
+      </div>
+
+      <div id="panel-emotion" class="panel" role="tabpanel" aria-labelledby="tab-emotion">
+        <p class="desc" style="margin-top:0">
+          把海外用户评论/投诉/私信<strong>手动粘贴</strong>到输入框，一键输出情绪仪表盘、夸赞词云、槽点排序与机会卡片。
+        </p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="emotionLang">评论语言（可选）</label>
+            <input id="emotionLang" placeholder="例如：西班牙语 / 英语（留空也可以）" />
+          </div>
+          <div class="field">
+            <label for="emotionBrand">品牌/产品名（可选）</label>
+            <input id="emotionBrand" placeholder="例如：BrandX / 某某口红" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="emotionInput">粘贴一批用户评论（每行一条更好）</label>
+          <textarea id="emotionInput" placeholder="例如：\n1) The shipping was super fast!\n2) The color looks different than the photos...\n3) ..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="emotionAnalyzeBtn" class="btn-main">一键分析并生成面板</button>
+          <button id="emotionCopyPromptBtn" class="btn-sub">复制提示词（不用 API 也能用）</button>
+          <button id="emotionClearBtn" class="btn-danger">清空输入</button>
+        </div>
+
+        <div id="emotionStatus" class="meta"></div>
+        <div id="emotionResult" class="result"></div>
+      </div>
+
+      <div id="panel-competitor" class="panel" role="tabpanel" aria-labelledby="tab-competitor">
+        <p class="desc" style="margin-top:0">
+          输入竞品公开信息（帖子链接、公开评论、或你手动复制的评论区内容），输出“弱点雷达”：情绪概览 + 频繁负面痛点 + 可攻击突破口建议。
+        </p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="compCountry">目标国家（可选）</label>
+            <input id="compCountry" placeholder="例如：墨西哥" />
+          </div>
+          <div class="field">
+            <label for="compProduct">竞品/产品（可选）</label>
+            <input id="compProduct" placeholder="例如：CompetitorY App / 某竞品面霜" />
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:12px">
+          <label for="compInput">粘贴竞品公开评论/链接/摘录（可混合；每行一条）</label>
+          <textarea id="compInput" placeholder="例如：\nhttps://tiktok.com/@xxx/video/...\n- It crashes all the time...\n- Customer support never replied...\n..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="compAnalyzeBtn" class="btn-main">生成弱点雷达</button>
+          <button id="compCopyPromptBtn" class="btn-sub">复制提示词（不用 API 也能用）</button>
+          <button id="compClearBtn" class="btn-danger">清空输入</button>
+        </div>
+
+        <div id="compStatus" class="meta"></div>
+        <div id="compResult" class="result"></div>
+      </div>
+
+      <div id="panel-hotspots" class="panel" role="tabpanel" aria-labelledby="tab-hotspots">
+        <p class="desc" style="margin-top:0">
+          让大模型扮演“文化秘书”，为目标国家整理未来一周的<strong>公共文化趋势</strong>，输出营销灵感日历（不需要抓取任何私有数据）。
+        </p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="hotCountry">目标国家</label>
+            <input id="hotCountry" placeholder="例如：墨西哥 / 西班牙" />
+          </div>
+          <div class="field">
+            <label for="hotCategory">产品品类（可选）</label>
+            <input id="hotCategory" placeholder="例如：美妆 / 运动 / 家居" />
+          </div>
+          <div class="field">
+            <label for="hotDays">未来几天</label>
+            <select id="hotDays">
+              <option value="7" selected>7 天</option>
+              <option value="10">10 天</option>
+              <option value="14">14 天</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="hotGoal">目标</label>
+            <select id="hotGoal">
+              <option value="种草转化">种草转化</option>
+              <option value="账号涨粉">账号涨粉</option>
+              <option value="品牌认知">品牌认知</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="hotGenBtn" class="btn-main">生成灵感日历</button>
+          <button id="hotCopyPromptBtn" class="btn-sub">复制提示词（不用 API 也能用）</button>
+        </div>
+
+        <div id="hotStatus" class="meta"></div>
+        <div id="hotResult" class="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="settingsDialog">
+    <form method="dialog">
+      <div class="dialog-head">
+        <h2>大模型接口设置（本地保存）</h2>
+        <button id="closeSettingsBtn" class="btn-sub" value="cancel" type="submit">关闭</button>
+      </div>
+      <div class="dialog-body">
+        <p class="desc" style="margin:0">
+          说明：API Key 仅保存在你当前浏览器的本地存储（localStorage）。如果你不想填 Key，也可以用每个功能里的“复制提示词”，粘贴到任意大模型对话框。
+        </p>
+        <div class="actions" style="margin-top:6px">
+          <button id="presetXfyunBtn" class="btn-sub" value="cancel" type="button">预填：讯飞 MaaS（OpenAI 兼容）</button>
+          <button id="presetOllamaBtn" class="btn-sub" value="cancel" type="button">预填：Ollama（本地模型 / 无 Key）</button>
+          <button id="presetLMStudioBtn" class="btn-sub" value="cancel" type="button">预填：LM Studio（本地模型 / 无 Key）</button>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label for="apiBaseUrl">API Base URL（OpenAI 兼容）</label>
+            <input id="apiBaseUrl" placeholder="https://api.openai.com/v1" />
+          </div>
+          <div class="field">
+            <label for="apiModel">模型（例如 gpt-4.1-mini / gpt-4o-mini）</label>
+            <input id="apiModel" placeholder="gpt-4o-mini" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" placeholder="云端 API 才需要；本地模型（127.0.0.1）可留空" />
+        </div>
+        <div class="field">
+          <label for="apiNote">小提示</label>
+          <input id="apiNote" disabled />
+        </div>
+        <div id="settingsStatus" class="meta"></div>
+      </div>
+      <div class="dialog-foot">
+        <button id="saveSettingsBtn" class="btn-main" value="ok" type="submit">保存</button>
+        <button id="testSettingsBtn" class="btn-sub" value="cancel" type="button">测试连接</button>
+        <button id="clearSettingsBtn" class="btn-danger" value="cancel" type="button">清除本地 Key</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const STORAGE_KEYS = {
+      apiBaseUrl: "ops_panel_api_base_url",
+      apiModel: "ops_panel_api_model",
+      apiKey: "ops_panel_api_key"
+    };
+
+    // 国家库：只放“节日/档期”和“文化场景”，不要把某个品类的趋势硬塞进来（避免“玩具+护肤”这种串台）。
+    const COUNTRY_LIBRARY = {
+      墨西哥: {
+        festivals: ["亡灵节", "独立日庆祝季", "返校季", "圣诞礼物季"],
+        culture_scenes: ["家庭聚会", "街头市集", "校园日常", "周末出游", "朋友聚餐"]
+      },
+      美国: {
+        festivals: ["万圣节", "黑五购物季", "感恩节", "返校季"],
+        culture_scenes: ["家庭聚餐", "派对准备", "车库收纳", "晨间通勤", "周末露营"]
+      },
+      英国: {
+        festivals: ["圣诞倒计时", "夏季音乐节", "复活节假期", "开学周"],
+        culture_scenes: ["雨天通勤", "周末 brunch", "音乐节出行", "城市散步", "居家下午茶"]
+      },
+      日本: {
+        festivals: ["樱花季", "黄金周", "夏日祭", "年末礼盒季"],
+        culture_scenes: ["通勤日常", "小空间收纳", "便利店补给", "居家治愈", "周末短途"]
+      }
+    };
+
+    const GLOBAL_EVENTS = ["周末出游", "换季收纳", "旅行打包", "约会准备", "居家焕新"];
+    const GLOBAL_SCENES = ["通勤路上", "家庭聚会", "朋友出游", "宿舍/小户型", "下班放松"];
+
+    // 品类趋势库：这里才放“玩法/脚本形态”，确保和品类强相关。
+    const CATEGORY_TRENDS = {
+      beauty: ["快速上脸对比", "通勤补妆 3 步", "妆前妆后反差", "持妆挑战", "伪素颜教程"],
+      toys: ["亲子互动玩法", "开箱盲袋反应", "3 种新玩法演示", "耐玩度实测", "收纳整理挑战"],
+      electronics: ["开箱上手 30 秒", "痛点修复小技巧", "同价位横评", "通勤效率提升", "充电续航实测"],
+      home: ["居家焕新前后对比", "收纳改造", "清洁省时技巧", "小空间神器", "周末大扫除流程"],
+      fashion: ["一衣多穿", "通勤/约会穿搭", "显瘦对比", "平替推荐", "试穿测评"],
+      sports: ["7 天挑战", "入门动作纠错", "器材使用教程", "拉伸放松", "通勤碎片训练"],
+      food: ["三分钟快手", "家庭聚餐省事", "盲测 PK", "低负担替代", "备餐思路"],
+      pets: ["宠物实测", "日常护理", "拆家预防", "省心清洁", "新手避坑"]
+    };
+
+    const CATEGORY_KEYWORDS = [
+      { key: "beauty", words: ["美妆", "护肤", "口红", "粉底", "面霜", "香水", "makeup", "skincare", "lipstick"] },
+      { key: "toys", words: ["玩具", "积木", "盲盒", "拼图", "娃娃", "toy", "lego", "puzzle", "doll"] },
+      { key: "electronics", words: ["3c", "数码", "电子", "耳机", "键盘", "鼠标", "手机", "平板", "camera", "headphone", "keyboard"] },
+      { key: "home", words: ["家居", "收纳", "清洁", "厨房", "卫浴", "home", "organize", "cleaning", "kitchen"] },
+      { key: "fashion", words: ["服饰", "穿搭", "鞋", "包", "fashion", "outfit", "shoes", "bag"] },
+      { key: "sports", words: ["运动", "健身", "瑜伽", "跑步", "fitness", "workout", "yoga", "running"] },
+      { key: "food", words: ["食品", "零食", "饮料", "咖啡", "tea", "snack", "food", "drink", "coffee"] },
+      { key: "pets", words: ["宠物", "猫", "狗", "猫砂", "pet", "cat", "dog"] }
+    ];
+
+    const HOOK_TEMPLATES = [
+      "你也有这个烦恼吗？今天 15 秒解决它",
+      "别再踩坑了，这个方法我晚知道一年",
+      "同价位里它凭什么爆火？我做了实测",
+      "本地人最近都在讨论这个用法",
+      "如果你在{country}，这条建议一定要收藏"
+    ];
+
+    const CTA_TEMPLATES = [
+      "评论区告诉我你最想看的下一期测评",
+      "想要同系列清单，打个“1”我继续更",
+      "收藏这条，节日前一定能用上",
+      "转发给会需要这个的朋友",
+      "如果你也在用，留言你的真实体验"
+    ];
+
+    const SCRIPT_PATTERNS = [
+      { structure: "痛点开场 -> 方案展示 -> 前后对比 -> 结尾 CTA" },
+      { structure: "节日场景引入 -> 快速试用 -> 真实反馈 -> 购买建议" },
+      { structure: "挑战设定 -> 过程记录 -> 结果揭晓 -> 互动提问" },
+      { structure: "5 秒抓人钩子 -> 3 个关键步骤 -> 注意事项 -> CTA" }
+    ];
+
+    const countryInput = document.getElementById("country");
+    const categoryInput = document.getElementById("category");
+    const countSelect = document.getElementById("count");
+    const toneSelect = document.getElementById("tone");
+    const ideaModeSelect = document.getElementById("ideaMode");
+    const ideaTempInput = document.getElementById("ideaTemp");
+    const ideaVoiceSelect = document.getElementById("ideaVoice");
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+
+    const tabs = [...document.querySelectorAll(".tab")];
+    const panels = [...document.querySelectorAll(".panel")];
+
+    const openSettingsBtn = document.getElementById("openSettingsBtn");
+    const settingsDialog = document.getElementById("settingsDialog");
+    const apiBaseUrlInput = document.getElementById("apiBaseUrl");
+    const apiModelInput = document.getElementById("apiModel");
+    const apiKeyInput = document.getElementById("apiKey");
+    const apiNoteInput = document.getElementById("apiNote");
+    const settingsStatus = document.getElementById("settingsStatus");
+    const clearSettingsBtn = document.getElementById("clearSettingsBtn");
+    const presetXfyunBtn = document.getElementById("presetXfyunBtn");
+    const presetOllamaBtn = document.getElementById("presetOllamaBtn");
+    const presetLMStudioBtn = document.getElementById("presetLMStudioBtn");
+    const testSettingsBtn = document.getElementById("testSettingsBtn");
+
+    const emotionLangInput = document.getElementById("emotionLang");
+    const emotionBrandInput = document.getElementById("emotionBrand");
+    const emotionInput = document.getElementById("emotionInput");
+    const emotionAnalyzeBtn = document.getElementById("emotionAnalyzeBtn");
+    const emotionCopyPromptBtn = document.getElementById("emotionCopyPromptBtn");
+    const emotionClearBtn = document.getElementById("emotionClearBtn");
+    const emotionStatus = document.getElementById("emotionStatus");
+    const emotionResult = document.getElementById("emotionResult");
+
+    const compCountryInput = document.getElementById("compCountry");
+    const compProductInput = document.getElementById("compProduct");
+    const compInput = document.getElementById("compInput");
+    const compAnalyzeBtn = document.getElementById("compAnalyzeBtn");
+    const compCopyPromptBtn = document.getElementById("compCopyPromptBtn");
+    const compClearBtn = document.getElementById("compClearBtn");
+    const compStatus = document.getElementById("compStatus");
+    const compResult = document.getElementById("compResult");
+
+    const hotCountryInput = document.getElementById("hotCountry");
+    const hotCategoryInput = document.getElementById("hotCategory");
+    const hotDaysSelect = document.getElementById("hotDays");
+    const hotGoalSelect = document.getElementById("hotGoal");
+    const hotGenBtn = document.getElementById("hotGenBtn");
+    const hotCopyPromptBtn = document.getElementById("hotCopyPromptBtn");
+    const hotStatus = document.getElementById("hotStatus");
+    const hotResult = document.getElementById("hotResult");
+
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function normalize(str) {
+      return (str || "").trim();
+    }
+
+    function setMeta(el, text, level = "ok") {
+      el.classList.remove("warn", "danger");
+      if (level === "warn") el.classList.add("warn");
+      if (level === "danger") el.classList.add("danger");
+      el.textContent = text || "";
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function clamp01(n) {
+      const x = Number(n);
+      if (Number.isNaN(x) || !Number.isFinite(x)) return 0;
+      return Math.max(0, Math.min(1, x));
+    }
+
+    function getCountryData(country) {
+      if (COUNTRY_LIBRARY[country]) return COUNTRY_LIBRARY[country];
+      return {
+        festivals: [...GLOBAL_EVENTS],
+        culture_scenes: [...GLOBAL_SCENES]
+      };
+    }
+
+    function getCategoryKey(categoryText) {
+      const raw = (categoryText || "").toLowerCase();
+      for (const item of CATEGORY_KEYWORDS) {
+        if (item.words.some((w) => raw.includes(String(w).toLowerCase()))) return item.key;
+      }
+      return "generic";
+    }
+
+    function getCategoryTrends(categoryText) {
+      const key = getCategoryKey(categoryText);
+      if (key !== "generic" && CATEGORY_TRENDS[key]) return CATEGORY_TRENDS[key];
+      return ["开箱反应", "盲测 PK", "前后对比", "一分钟教程", "评论区点单"];
+    }
+
+    function initTabs() {
+      function activate(tabId) {
+        tabs.forEach((t) => t.setAttribute("aria-selected", String(t.id === tabId)));
+        panels.forEach((p) => p.classList.toggle("active", p.getAttribute("aria-labelledby") === tabId));
+      }
+      tabs.forEach((t) => {
+        t.addEventListener("click", () => activate(t.id));
+      });
+    }
+
+    function loadSettings() {
+      const savedBaseUrl = localStorage.getItem(STORAGE_KEYS.apiBaseUrl);
+      const defaultBaseUrl =
+        location.protocol === "file:"
+          ? "https://api.openai.com/v1"
+          : `${location.origin}/api`;
+      const baseUrl = savedBaseUrl || defaultBaseUrl;
+      const model = localStorage.getItem(STORAGE_KEYS.apiModel) || "gpt-4o-mini";
+      const apiKey = localStorage.getItem(STORAGE_KEYS.apiKey) || "";
+      apiBaseUrlInput.value = baseUrl;
+      apiModelInput.value = model;
+      apiKeyInput.value = apiKey;
+
+      if (location.protocol === "file:") {
+        apiNoteInput.value = "若遇到浏览器跨域限制，建议用本地服务器打开（例：python -m http.server 5173）。";
+      } else {
+        apiNoteInput.value = "部署到 Vercel 后默认可用：Base URL 通常设为 https://你的域名/api（同源后端转发，不会 CORS）。本地直连云端若 CORS，可用 run_panel_proxy.py。";
+      }
+    }
+
+    function saveSettings() {
+      localStorage.setItem(STORAGE_KEYS.apiBaseUrl, normalize(apiBaseUrlInput.value) || "https://api.openai.com/v1");
+      localStorage.setItem(STORAGE_KEYS.apiModel, normalize(apiModelInput.value) || "gpt-4o-mini");
+      localStorage.setItem(STORAGE_KEYS.apiKey, normalize(apiKeyInput.value) || "");
+    }
+
+    function clearSettings() {
+      localStorage.removeItem(STORAGE_KEYS.apiKey);
+      apiKeyInput.value = "";
+    }
+
+    function getClientConfig() {
+      const baseUrl = normalize(localStorage.getItem(STORAGE_KEYS.apiBaseUrl)) || "https://api.openai.com/v1";
+      const model = normalize(localStorage.getItem(STORAGE_KEYS.apiModel)) || "gpt-4o-mini";
+      const apiKey = normalize(localStorage.getItem(STORAGE_KEYS.apiKey)) || "";
+      return { baseUrl, model, apiKey };
+    }
+
+    function isLocalBaseUrl(baseUrl) {
+      try {
+        const url = new URL(baseUrl);
+        const host = url.hostname;
+        return host === "localhost" || host === "127.0.0.1" || host === "::1";
+      } catch {
+        return false;
+      }
+    }
+
+    function stripCodeFences(text) {
+      const t = String(text || "").trim();
+      if (t.startsWith("```")) {
+        const firstNewline = t.indexOf("\n");
+        const lastFence = t.lastIndexOf("```");
+        if (firstNewline !== -1 && lastFence !== -1 && lastFence > firstNewline) {
+          return t.slice(firstNewline + 1, lastFence).trim();
+        }
+      }
+      return t;
+    }
+
+    function safeJsonParse(text) {
+      const raw = stripCodeFences(text);
+      try {
+        return { ok: true, value: JSON.parse(raw) };
+      } catch (e) {
+        return { ok: false, error: e, raw };
+      }
+    }
+
+    async function callOpenAICompatible({ system, user, temperature = 0.2, maxTokens = 900 }) {
+      const cfg = getClientConfig();
+      const localOk = isLocalBaseUrl(cfg.baseUrl);
+      if (!cfg.apiKey && !localOk) {
+        const err = new Error("NO_API_KEY");
+        err.code = "NO_API_KEY";
+        throw err;
+      }
+
+      const url = `${cfg.baseUrl.replace(/\/$/, "")}/chat/completions`;
+      const headers = { "Content-Type": "application/json" };
+      if (cfg.apiKey) headers.Authorization = `Bearer ${cfg.apiKey}`;
+      const resp = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          model: cfg.model,
+          temperature,
+          max_tokens: maxTokens,
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: user }
+          ]
+        })
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        const err = new Error(`API_ERROR_${resp.status}`);
+        err.status = resp.status;
+        err.details = txt;
+        throw err;
+      }
+      const data = await resp.json();
+      const content = data?.choices?.[0]?.message?.content ?? "";
+      return String(content);
+    }
+
+    function buildPrompt(country, category, tone, festival, trend) {
+      return [
+        `你是一名擅长海外内容运营的 TikTok 创作者。`,
+        `目标国家：${country}；产品品类：${category}；内容风格：${tone}。`,
+        `请围绕“${festival}”与“${trend}”输出一个短视频脚本创意，`,
+        `包含：标题、开场钩子、3 段镜头、配音文案、结尾互动引导。`,
+        `要求：贴近本地文化语境，节奏快，可在 30-45 秒内拍完。`
+      ].join("");
+    }
+
+    function buildIdeasModelPrompt({ country, category, tone, voice, count }) {
+      const data = getCountryData(country);
+      const scenes = (data?.culture_scenes || GLOBAL_SCENES).slice(0, 8);
+      const festivals = (data?.festivals || GLOBAL_EVENTS).slice(0, 8);
+      const catTrends = getCategoryTrends(category).slice(0, 10);
+
+      return [
+        "你是一名擅长海外内容运营的 TikTok 内容策划与编导。",
+        "你必须写出自然、像本地人会说的表达，避免中文互联网常见套话（例如“宝子们”“安排上”“直接冲”等）。",
+        "不要输出空泛建议，每条必须可拍、可执行、具体到镜头与台词。",
+        "",
+        `目标国家：${country}`,
+        `产品品类：${category}`,
+        `脚本风格：${tone}`,
+        `口吻偏好：${voice}`,
+        `请生成 ${count} 条短视频脚本灵感。`,
+        "",
+        "可用素材（你可以组合，但不要生硬拼接）：",
+        `- 本地节日/档期候选：${festivals.join("、")}`,
+        `- 本地生活场景候选：${scenes.join("、")}`,
+        `- 品类趋势/玩法候选：${catTrends.join("、")}`,
+        "",
+        "输出格式必须是严格 JSON（不要 Markdown 代码块），结构如下：",
+        "{",
+        '  "ideas": [',
+        "    {",
+        '      "title": "标题（包含节日/场景/玩法要素）",',
+        '      "festival": "节日或档期（允许为空字符串）",',
+        '      "scene": "生活场景（允许为空字符串）",',
+        '      "trend": "玩法/趋势关键词",',
+        '      "pattern": "脚本结构一句话",',
+        '      "scene1": "镜头1（0-5秒）具体怎么拍+一句台词",',
+        '      "scene2": "镜头2（6-22秒）具体怎么拍+一句台词",',
+        '      "scene3": "镜头3（23-40秒）具体怎么拍+一句台词",',
+        '      "voiceover": "一段自然口语的配音文案（1-2句）",',
+        '      "cta": "结尾互动引导一句话",',
+        '      "hashtags": "#tag1 #tag2 #tag3（空格分隔，含国家/场景/品类/节日）"',
+        "    }",
+        "  ]",
+        "}",
+        "",
+        "额外要求：",
+        `- 你必须输出刚好 ${count} 条 ideas，不多不少。`,
+        "- 每条都要避免重复措辞与结构。",
+        "- 不要硬塞不相关领域词（例如玩具不要出现护肤/持妆/补妆等）。",
+        "- festival/scene 如果不合适可以留空，但 title 仍要有“强情境”。",
+        "",
+        "现在开始输出 JSON。"
+      ].join("\n");
+    }
+
+    function normalizeIdeaItem(x, fallbackCountry, fallbackCategory, fallbackTone) {
+      const safe = (v) => String(v || "").trim();
+      const title = safe(x?.title) || `${safe(x?.festival)}｜${fallbackCategory}脚本灵感`;
+      const festival = safe(x?.festival);
+      const trend = safe(x?.trend);
+      const pattern = safe(x?.pattern) || "痛点开场 -> 展示 -> 对比 -> CTA";
+      const scene1 = safe(x?.scene1) || `镜头1：在${fallbackCountry}常见场景抛出${fallbackCategory}痛点。`;
+      const scene2 = safe(x?.scene2) || `镜头2：展示${fallbackCategory}亮点，用${trend || "对比"}方式表达。`;
+      const scene3 = safe(x?.scene3) || `镜头3：结果对比+反馈，给出建议并引导互动。`;
+      const voiceover = safe(x?.voiceover) || `如果你也在${fallbackCountry}遇到这个问题，这条你一定用得上。`;
+      const cta = safe(x?.cta) || "你更在意哪一点？评论区告诉我。";
+      const hashtags = safe(x?.hashtags) || `#${fallbackCountry}TikTok #${fallbackCategory} #推荐`;
+      const prompt = buildPrompt(fallbackCountry, fallbackCategory, fallbackTone, festival || "本地档期", trend || "热门玩法");
+      return {
+        title,
+        festival: festival || "",
+        trend: trend || "",
+        pattern,
+        scene1,
+        scene2,
+        scene3,
+        voiceover,
+        cta,
+        hashtags,
+        prompt
+      };
+    }
+
+    async function generateIdeasViaModel({ country, category, tone, voice, count, temperature }) {
+      const system = "你是严谨的内容策划助手。必须输出严格 JSON，且只输出 JSON。";
+      const user = buildIdeasModelPrompt({ country, category, tone, voice, count });
+      const content = await callOpenAICompatible({
+        system,
+        user,
+        temperature,
+        maxTokens: Math.max(900, 250 * count)
+      });
+      const parsed = safeJsonParse(content);
+      if (!parsed.ok) {
+        const err = new Error("MODEL_OUTPUT_NOT_JSON");
+        err.code = "MODEL_OUTPUT_NOT_JSON";
+        err.raw = parsed.raw;
+        throw err;
+      }
+      const ideas = Array.isArray(parsed.value?.ideas) ? parsed.value.ideas : [];
+      const normalized = ideas.map((x) => normalizeIdeaItem(x, country, category, tone)).filter((x) => x?.title);
+
+      // 模型偶尔会少给条数：不足部分用本地模板补齐，保证输出数量稳定。
+      if (normalized.length < count) {
+        const fillers = generateIdeas(country, category, tone, count - normalized.length);
+        return normalized.concat(fillers).slice(0, count);
+      }
+      return normalized.slice(0, count);
+    }
+
+    function generateIdeas(country, category, tone, count) {
+      const data = getCountryData(country);
+      const catTrends = getCategoryTrends(category);
+      const ideas = [];
+
+      for (let i = 0; i < count; i += 1) {
+        const festival = pick(data.festivals);
+        const scene = pick(data.culture_scenes || GLOBAL_SCENES);
+        const trend = pick(catTrends);
+        const pattern = pick(SCRIPT_PATTERNS).structure;
+        const hook = pick(HOOK_TEMPLATES).replace("{country}", country);
+        const cta = pick(CTA_TEMPLATES);
+
+        const title = `${festival} · ${scene}｜${category}：${trend}脚本灵感 #${i + 1}`;
+        const scene1 = `镜头1（0-5秒）：${hook}，把场景放到“${festival}/${scene}”，抛出${category}的真实痛点。`;
+        const scene2 = `镜头2（6-22秒）：用“${trend}”的形式展示${category}核心卖点（上手/玩法/效果）。`;
+        const scene3 = `镜头3（23-40秒）：结果对比 + 1 句真实反馈，强化“为什么现在就要入手/送礼/囤货”。`;
+        const voiceover = `在${country}的${festival}期间，${scene}的需求会变多：这类${category}用对了真的更省心也更出片。`;
+        const hashtags = `#${country}TikTok #${category}推荐 #${festival} #${trend}`;
+        const prompt = buildPrompt(country, category, tone, festival, trend);
+
+        ideas.push({
+          title,
+          festival,
+          trend,
+          pattern,
+          scene1,
+          scene2,
+          scene3,
+          voiceover,
+          cta,
+          hashtags,
+          prompt
+        });
+      }
+      return ideas;
+    }
+
+    function renderIdeas(ideas) {
+      resultEl.innerHTML = "";
+      ideas.forEach((item) => {
+        const block = document.createElement("div");
+        block.className = "idea";
+        block.innerHTML = `
+          <h3>${item.title}</h3>
+          <p><strong>脚本结构：</strong>${item.pattern}</p>
+          <p><strong>镜头拆解：</strong><br>${item.scene1}<br>${item.scene2}<br>${item.scene3}</p>
+          <p><strong>配音文案：</strong>${item.voiceover}</p>
+          <p><strong>结尾互动：</strong>${item.cta}</p>
+          <p><strong>建议标签：</strong><span class="muted">${item.hashtags}</span></p>
+          <p><strong>可喂给 AI 的提示词：</strong><span class="muted">${item.prompt}</span></p>
+        `;
+        resultEl.appendChild(block);
+      });
+    }
+
+    function formatIdeasForClipboard() {
+      const cards = [...document.querySelectorAll(".idea")];
+      if (!cards.length) return "";
+      return cards.map((c, i) => `【灵感 ${i + 1}】\n${c.innerText}`).join("\n\n----------------\n\n");
+    }
+
+    generateBtn.addEventListener("click", async () => {
+      const country = normalize(countryInput.value);
+      const category = normalize(categoryInput.value);
+      const count = Number(countSelect.value);
+      const tone = toneSelect.value;
+      const mode = ideaModeSelect?.value || "model";
+      const voice = ideaVoiceSelect?.value || "更口语、更像本地人";
+      const temperature = Math.max(0, Math.min(1, Number(ideaTempInput?.value ?? 0.75)));
+
+      if (!country || !category) {
+        setMeta(statusEl, "请先填写目标国家和产品品类。", "warn");
+        return;
+      }
+
+      setMeta(statusEl, "生成中…（优先调用大模型；失败会自动兜底本地模板）", "ok");
+
+      if (mode === "local") {
+        const ideas = generateIdeas(country, category, tone, count);
+        renderIdeas(ideas);
+        setMeta(statusEl, `已用本地模板生成 ${ideas.length} 条（${country} / ${category} / ${tone}）。`, "ok");
+        return;
+      }
+
+      try {
+        const ideas = await generateIdeasViaModel({ country, category, tone, voice, count, temperature });
+        renderIdeas(ideas);
+        const note = ideas.length < count ? "（模型条数不足，已自动补齐）" : "";
+        setMeta(statusEl, `已用大模型生成 ${ideas.length} 条（${country} / ${category} / ${tone}，创意强度 ${temperature}）${note}。`, "ok");
+      } catch (e) {
+        const fallback = generateIdeas(country, category, tone, count);
+        renderIdeas(fallback);
+        if (e?.code === "NO_API_KEY") {
+          setMeta(statusEl, `未配置可用的大模型接口：已兜底本地模板生成 ${fallback.length} 条。`, "warn");
+          return;
+        }
+        if (e?.code === "MODEL_OUTPUT_NOT_JSON") {
+          setMeta(statusEl, `大模型输出格式不稳定：已兜底本地模板生成 ${fallback.length} 条。`, "warn");
+          return;
+        }
+        setMeta(statusEl, `调用大模型失败：已兜底本地模板生成 ${fallback.length} 条（${e?.message || "未知错误"}）。`, "warn");
+      }
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const text = formatIdeasForClipboard();
+      if (!text) {
+        setMeta(statusEl, "还没有可复制的内容，请先生成灵感。", "warn");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        setMeta(statusEl, "已复制全部结果，可直接粘贴到文档或 AI 对话框。", "ok");
+      } catch (err) {
+        setMeta(statusEl, "复制失败，请手动全选结果复制。", "warn");
+      }
+    });
+
+    function buildEmotionPrompt({ lang, brand, rawComments }) {
+      const cleanLang = normalize(lang);
+      const cleanBrand = normalize(brand);
+      const brandLine = cleanBrand ? `品牌/产品：${cleanBrand}。` : `品牌/产品：未知（不影响分析）。`;
+      const langLine = cleanLang ? `评论语言：${cleanLang}。` : `评论语言：未指定，请自行识别。`;
+
+      return [
+        "你是一名专业的海外用户洞察分析师，擅长多语言评论归因与情绪分析。",
+        "请只基于我提供的文本做分析，不要编造来源或数据。",
+        "输出必须为 JSON（不要包含任何 Markdown 代码块）。",
+        "",
+        `背景：${brandLine} ${langLine}`,
+        "任务：对评论进行聚类与情绪判断，输出可用于运营面板的结构化结果。",
+        "",
+        "JSON 结构要求：",
+        "{",
+        '  "sentiment_ratio": { "positive": 0.0, "neutral": 0.0, "negative": 0.0 },',
+        '  "top_praises": [ { "term": "发货快", "count": 12, "examples": ["...","..."] } ],',
+        '  "top_complaints": [ { "issue": "掉色严重", "count": 10, "examples": ["...","..."] } ],',
+        '  "opportunity_card": {',
+        '     "product_improvements": [ "建议1", "建议2", "建议3" ],',
+        '     "content_marketing": [ "建议1", "建议2", "建议3" ],',
+        '     "customer_service": [ "建议1", "建议2", "建议3" ]',
+        "  },",
+        '  "notes": [ "任何重要但不确定的假设需写在这里" ]',
+        "}",
+        "",
+        "要求：",
+        "- sentiment_ratio 三项加和为 1（允许四舍五入误差）。",
+        "- top_praises 与 top_complaints 各给 6-10 条，按 count 降序。",
+        "- examples 必须来自原文（可截断），每项 1-3 条。",
+        "",
+        "输入评论如下：",
+        rawComments
+      ].join("\n");
+    }
+
+    function scoreToWeight(count, maxCount) {
+      if (!maxCount) return 1;
+      const r = count / maxCount;
+      if (r >= 0.8) return 5;
+      if (r >= 0.6) return 4;
+      if (r >= 0.4) return 3;
+      if (r >= 0.2) return 2;
+      return 1;
+    }
+
+    function renderEmotionDashboard(data) {
+      emotionResult.innerHTML = "";
+      const ratio = data?.sentiment_ratio || {};
+      const positive = clamp01(ratio.positive);
+      const neutral = clamp01(ratio.neutral);
+      const negative = clamp01(ratio.negative);
+
+      const kpiWrap = document.createElement("div");
+      kpiWrap.className = "kpi-grid";
+      kpiWrap.innerHTML = `
+        <div class="kpi">
+          <div class="label">正面占比</div>
+          <div class="value">${Math.round(positive * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(positive * 100)}%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="label">中性占比</div>
+          <div class="value">${Math.round(neutral * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(neutral * 100)}%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="label">负面占比</div>
+          <div class="value">${Math.round(negative * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(negative * 100)}%"></div></div>
+        </div>
+      `;
+      emotionResult.appendChild(kpiWrap);
+
+      const praises = Array.isArray(data?.top_praises) ? data.top_praises : [];
+      const complaints = Array.isArray(data?.top_complaints) ? data.top_complaints : [];
+      const maxPraise = praises.reduce((m, x) => Math.max(m, Number(x?.count) || 0), 0);
+
+      const praiseCard = document.createElement("div");
+      praiseCard.className = "idea";
+      praiseCard.innerHTML = `<h3>高频赞美词云</h3><p class="muted">用户最常夸的点（越大越频繁）</p>`;
+      const praiseChips = document.createElement("div");
+      praiseChips.className = "chips";
+      praises.slice(0, 12).forEach((p) => {
+        const term = escapeHtml(p?.term || "");
+        const c = Number(p?.count) || 0;
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.dataset.weight = String(scoreToWeight(c, maxPraise));
+        chip.title = (p?.examples || []).slice(0, 2).join("\n");
+        chip.textContent = `${term} (${c})`;
+        praiseChips.appendChild(chip);
+      });
+      praiseCard.appendChild(praiseChips);
+      emotionResult.appendChild(praiseCard);
+
+      const complaintCard = document.createElement("div");
+      complaintCard.className = "idea";
+      complaintCard.innerHTML = `<h3>核心槽点排序（Top 3）</h3><p class="muted">按出现频次排序，并附带原文例句</p>`;
+      const ul = document.createElement("ol");
+      ul.className = "list";
+      complaints.slice(0, 3).forEach((c) => {
+        const li = document.createElement("li");
+        const issue = escapeHtml(c?.issue || "");
+        const cnt = Number(c?.count) || 0;
+        const ex = Array.isArray(c?.examples) ? c.examples.slice(0, 2) : [];
+        li.innerHTML = `<strong>${issue}</strong>（${cnt}）<br><span class="muted">${escapeHtml(ex.join(" / "))}</span>`;
+        ul.appendChild(li);
+      });
+      complaintCard.appendChild(ul);
+      emotionResult.appendChild(complaintCard);
+
+      const opp = data?.opportunity_card || {};
+      const oppCard = document.createElement("div");
+      oppCard.className = "idea";
+      oppCard.innerHTML = `<h3>机会卡片（可执行建议）</h3>`;
+      const sections = [
+        ["产品改进", opp.product_improvements],
+        ["内容营销", opp.content_marketing],
+        ["客服/售后", opp.customer_service]
+      ];
+      sections.forEach(([title, arr]) => {
+        const items = Array.isArray(arr) ? arr : [];
+        const block = document.createElement("div");
+        block.innerHTML = `<p><strong>${title}：</strong></p>`;
+        const list = document.createElement("ul");
+        list.className = "list";
+        items.slice(0, 3).forEach((x) => {
+          const li = document.createElement("li");
+          li.textContent = String(x || "");
+          list.appendChild(li);
+        });
+        block.appendChild(list);
+        oppCard.appendChild(block);
+      });
+      emotionResult.appendChild(oppCard);
+
+      const notes = Array.isArray(data?.notes) ? data.notes : [];
+      if (notes.length) {
+        const noteCard = document.createElement("div");
+        noteCard.className = "idea";
+        noteCard.innerHTML = `<h3>分析备注</h3><ul class="list">${notes.slice(0, 6).map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
+        emotionResult.appendChild(noteCard);
+      }
+    }
+
+    async function runEmotionAnalysis() {
+      const lang = normalize(emotionLangInput.value);
+      const brand = normalize(emotionBrandInput.value);
+      const comments = normalize(emotionInput.value);
+      if (!comments) {
+        setMeta(emotionStatus, "请先粘贴一批用户评论。", "warn");
+        return;
+      }
+      setMeta(emotionStatus, "分析中…（如果没有 API Key，请点“复制提示词”手动分析）", "ok");
+
+      const system = "你是严谨的洞察分析助手。必须输出严格 JSON，且只基于输入文本。";
+      const user = buildEmotionPrompt({ lang, brand, rawComments: comments });
+
+      try {
+        const content = await callOpenAICompatible({ system, user, temperature: 0.2, maxTokens: 1200 });
+        const parsed = safeJsonParse(content);
+        if (!parsed.ok) {
+          setMeta(emotionStatus, "模型输出不是有效 JSON，已把原始输出显示在下方，方便你手动修正。", "warn");
+          emotionResult.innerHTML = `<div class="idea"><h3>原始输出（请手动修正为 JSON）</h3><p class="muted">${escapeHtml(parsed.raw).replaceAll("\n", "<br>")}</p></div>`;
+          return;
+        }
+        renderEmotionDashboard(parsed.value);
+        setMeta(emotionStatus, "完成：已生成情绪仪表盘 + 词云 + 槽点 + 机会卡片。", "ok");
+      } catch (e) {
+        if (e?.code === "NO_API_KEY") {
+          setMeta(emotionStatus, "未配置 API Key：请点“复制提示词”，把提示词 + 评论粘贴到你常用的大模型里。", "warn");
+          return;
+        }
+        setMeta(emotionStatus, `调用失败：${e?.message || "未知错误"}（可能是网络或跨域限制）`, "danger");
+      }
+    }
+
+    function buildCompetitorPrompt({ country, product, rawText }) {
+      const c = normalize(country) || "未指定";
+      const p = normalize(product) || "未指定";
+      return [
+        "你是一名竞品分析与增长策略顾问。",
+        "请只基于我提供的公开信息文本进行总结，不要编造事实。",
+        "输出必须为 JSON（不要包含任何 Markdown 代码块）。",
+        "",
+        `目标国家：${c}`,
+        `竞品/产品：${p}`,
+        "",
+        "请输出：",
+        "- 情绪比例（正/中/负）",
+        "- 被频繁提及的负面痛点（Top 8，含计数与例句）",
+        "- 可攻击的营销突破口（3 条）",
+        "- 我方内容/产品可对标的“对比角度”（3 条）",
+        "",
+        "JSON 结构：",
+        "{",
+        '  "sentiment_ratio": { "positive": 0.0, "neutral": 0.0, "negative": 0.0 },',
+        '  "top_negative_pains": [ { "pain": "客服慢", "count": 9, "examples": ["...","..."] } ],',
+        '  "attack_angles": [ "突破口1", "突破口2", "突破口3" ],',
+        '  "comparison_angles": [ "对比角度1", "对比角度2", "对比角度3" ]',
+        "}",
+        "",
+        "输入文本如下：",
+        rawText
+      ].join("\n");
+    }
+
+    function renderCompetitorRadar(data) {
+      compResult.innerHTML = "";
+      const ratio = data?.sentiment_ratio || {};
+      const positive = clamp01(ratio.positive);
+      const neutral = clamp01(ratio.neutral);
+      const negative = clamp01(ratio.negative);
+
+      const kpiWrap = document.createElement("div");
+      kpiWrap.className = "kpi-grid";
+      kpiWrap.innerHTML = `
+        <div class="kpi">
+          <div class="label">正面占比</div>
+          <div class="value">${Math.round(positive * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(positive * 100)}%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="label">中性占比</div>
+          <div class="value">${Math.round(neutral * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(neutral * 100)}%"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="label">负面占比</div>
+          <div class="value">${Math.round(negative * 100)}%</div>
+          <div class="bar"><div style="width:${Math.round(negative * 100)}%"></div></div>
+        </div>
+      `;
+      compResult.appendChild(kpiWrap);
+
+      const pains = Array.isArray(data?.top_negative_pains) ? data.top_negative_pains : [];
+      const painCard = document.createElement("div");
+      painCard.className = "idea";
+      painCard.innerHTML = `<h3>竞品负面痛点（Top 8）</h3><p class="muted">按出现频次排序（含原文例句）</p>`;
+      const ul = document.createElement("ol");
+      ul.className = "list";
+      pains.slice(0, 8).forEach((x) => {
+        const li = document.createElement("li");
+        const pain = escapeHtml(x?.pain || "");
+        const cnt = Number(x?.count) || 0;
+        const ex = Array.isArray(x?.examples) ? x.examples.slice(0, 2) : [];
+        li.innerHTML = `<strong>${pain}</strong>（${cnt}）<br><span class="muted">${escapeHtml(ex.join(" / "))}</span>`;
+        ul.appendChild(li);
+      });
+      painCard.appendChild(ul);
+      compResult.appendChild(painCard);
+
+      const attack = Array.isArray(data?.attack_angles) ? data.attack_angles : [];
+      const compa = Array.isArray(data?.comparison_angles) ? data.comparison_angles : [];
+
+      const stratCard = document.createElement("div");
+      stratCard.className = "idea";
+      stratCard.innerHTML = `<h3>军师建议：突破口 & 对比角度</h3>`;
+      stratCard.innerHTML += `<p><strong>可攻击突破口（3 条）：</strong></p>`;
+      stratCard.innerHTML += `<ul class="list">${attack.slice(0, 3).map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`;
+      stratCard.innerHTML += `<p><strong>对比角度（3 条）：</strong></p>`;
+      stratCard.innerHTML += `<ul class="list">${compa.slice(0, 3).map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>`;
+      compResult.appendChild(stratCard);
+    }
+
+    async function runCompetitorAnalysis() {
+      const raw = normalize(compInput.value);
+      if (!raw) {
+        setMeta(compStatus, "请先粘贴竞品公开信息（链接/评论/摘录）。", "warn");
+        return;
+      }
+      setMeta(compStatus, "分析中…（如果没有 API Key，请点“复制提示词”手动分析）", "ok");
+      const system = "你是严谨的竞品分析助手。必须输出严格 JSON，且只基于输入文本。";
+      const user = buildCompetitorPrompt({
+        country: compCountryInput.value,
+        product: compProductInput.value,
+        rawText: raw
+      });
+      try {
+        const content = await callOpenAICompatible({ system, user, temperature: 0.2, maxTokens: 1100 });
+        const parsed = safeJsonParse(content);
+        if (!parsed.ok) {
+          setMeta(compStatus, "模型输出不是有效 JSON，已展示原始输出，方便你手动修正。", "warn");
+          compResult.innerHTML = `<div class="idea"><h3>原始输出（请手动修正为 JSON）</h3><p class="muted">${escapeHtml(parsed.raw).replaceAll("\n", "<br>")}</p></div>`;
+          return;
+        }
+        renderCompetitorRadar(parsed.value);
+        setMeta(compStatus, "完成：已生成竞品弱点雷达。", "ok");
+      } catch (e) {
+        if (e?.code === "NO_API_KEY") {
+          setMeta(compStatus, "未配置 API Key：请点“复制提示词”，粘贴到你常用的大模型里分析。", "warn");
+          return;
+        }
+        setMeta(compStatus, `调用失败：${e?.message || "未知错误"}（可能是网络或跨域限制）`, "danger");
+      }
+    }
+
+    function buildHotspotPrompt({ country, category, days, goal }) {
+      const c = normalize(country);
+      const cat = normalize(category) || "不限";
+      const d = Number(days) || 7;
+      const g = normalize(goal) || "种草转化";
+      const today = new Date();
+      const tzInfo = Intl.DateTimeFormat().resolvedOptions().timeZone || "local";
+      const iso = today.toISOString().slice(0, 10);
+
+      return [
+        "你是一名跨文化市场的“文化秘书”和内容策划。",
+        "你的任务是为目标国家整理未来一周的公共文化趋势与营销切入点。",
+        "要求完全合规：不得引用或声称抓取任何私有数据；可使用你对公开文化常识与常见节假日/季节性趋势的理解。",
+        "输出必须为 JSON（不要包含任何 Markdown 代码块）。",
+        "",
+        `目标国家：${c}`,
+        `品类：${cat}`,
+        `目标：${g}`,
+        `今天日期（参考）：${iso}（时区：${tzInfo}）`,
+        `请输出未来 ${d} 天的“营销灵感日历”。`,
+        "",
+        "JSON 结构：",
+        "{",
+        '  "calendar": [',
+        '    {',
+        '      "date": "YYYY-MM-DD",',
+        '      "theme": "主题/场景（节日/季节/生活方式）",',
+        '      "why_now": "为什么这个时间点适合发",',
+        '      "content_angles": [ "角度1", "角度2", "角度3" ],',
+        '      "shot_list": [ "镜头点子1", "镜头点子2", "镜头点子3" ],',
+        '      "cta": "互动引导一句话",',
+        '      "hashtags": [ "#xxx", "#yyy" ],',
+        '      "sound_note": "音乐/声音建议（泛化描述，不要给出受版权保护的具体曲目下载链接）"',
+        "    }",
+        "  ],",
+        '  "notes": [ "需要提醒的文化禁忌/措辞建议" ]',
+        "}",
+        "",
+        "生成原则：",
+        "- 每天 1 条（共 d 条），尽量不重复。",
+        "- 主题要更像“本土生活方式”而非硬广。",
+        "- hashtags 兼顾国家/城市/场景/品类。",
+        "",
+        "现在开始输出 JSON。"
+      ].join("\n");
+    }
+
+    function renderHotspotCalendar(data) {
+      hotResult.innerHTML = "";
+      const cal = Array.isArray(data?.calendar) ? data.calendar : [];
+      if (!cal.length) {
+        hotResult.innerHTML = `<div class="idea"><h3>没有生成日历</h3><p class="muted">模型返回的 calendar 为空。</p></div>`;
+        return;
+      }
+
+      cal.forEach((x) => {
+        const card = document.createElement("div");
+        card.className = "idea";
+        const hashtags = Array.isArray(x?.hashtags) ? x.hashtags : [];
+        const angles = Array.isArray(x?.content_angles) ? x.content_angles : [];
+        const shots = Array.isArray(x?.shot_list) ? x.shot_list : [];
+        card.innerHTML = `
+          <h3>${escapeHtml(x?.date || "")} · ${escapeHtml(x?.theme || "")}</h3>
+          <p><strong>为什么现在：</strong>${escapeHtml(x?.why_now || "")}</p>
+          <p><strong>内容角度：</strong></p>
+          <ul class="list">${angles.slice(0, 3).map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>
+          <p><strong>镜头点子：</strong></p>
+          <ul class="list">${shots.slice(0, 3).map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ul>
+          <p><strong>CTA：</strong>${escapeHtml(x?.cta || "")}</p>
+          <p><strong>声音建议：</strong><span class="muted">${escapeHtml(x?.sound_note || "")}</span></p>
+          <p><strong>标签：</strong><span class="muted">${escapeHtml(hashtags.join(" "))}</span></p>
+        `;
+        hotResult.appendChild(card);
+      });
+
+      const notes = Array.isArray(data?.notes) ? data.notes : [];
+      if (notes.length) {
+        const noteCard = document.createElement("div");
+        noteCard.className = "idea";
+        noteCard.innerHTML = `<h3>文化提醒 / 注意事项</h3><ul class="list">${notes.slice(0, 8).map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
+        hotResult.appendChild(noteCard);
+      }
+    }
+
+    async function runHotspotGen() {
+      const country = normalize(hotCountryInput.value);
+      if (!country) {
+        setMeta(hotStatus, "请先填写目标国家。", "warn");
+        return;
+      }
+      setMeta(hotStatus, "生成中…（如果没有 API Key，请点“复制提示词”手动生成）", "ok");
+      const system = "你是严谨的文化趋势策划助手。必须输出严格 JSON，且避免编造具体‘实时热搜数据来源’。";
+      const user = buildHotspotPrompt({
+        country,
+        category: hotCategoryInput.value,
+        days: hotDaysSelect.value,
+        goal: hotGoalSelect.value
+      });
+      try {
+        const content = await callOpenAICompatible({ system, user, temperature: 0.35, maxTokens: 1400 });
+        const parsed = safeJsonParse(content);
+        if (!parsed.ok) {
+          setMeta(hotStatus, "模型输出不是有效 JSON，已展示原始输出，方便你手动修正。", "warn");
+          hotResult.innerHTML = `<div class="idea"><h3>原始输出（请手动修正为 JSON）</h3><p class="muted">${escapeHtml(parsed.raw).replaceAll("\n", "<br>")}</p></div>`;
+          return;
+        }
+        renderHotspotCalendar(parsed.value);
+        setMeta(hotStatus, "完成：已生成本土化热点灵感日历。", "ok");
+      } catch (e) {
+        if (e?.code === "NO_API_KEY") {
+          setMeta(hotStatus, "未配置 API Key：请点“复制提示词”，粘贴到你常用的大模型里生成日历。", "warn");
+          return;
+        }
+        setMeta(hotStatus, `调用失败：${e?.message || "未知错误"}（可能是网络或跨域限制）`, "danger");
+      }
+    }
+
+    function copyTextToClipboard(text, metaEl) {
+      const t = String(text || "");
+      if (!t.trim()) {
+        setMeta(metaEl, "没有可复制内容。", "warn");
+        return;
+      }
+      navigator.clipboard.writeText(t).then(
+        () => setMeta(metaEl, "已复制到剪贴板。", "ok"),
+        () => setMeta(metaEl, "复制失败：请手动复制。", "warn")
+      );
+    }
+
+    function wrapAsUserPastePrompt(title, prompt, rawInput) {
+      return [
+        `【${title}】`,
+        "",
+        "把下面内容整体粘贴到你的大模型对话框：",
+        "",
+        "==== 提示词 ====",
+        prompt,
+        "",
+        "==== 输入文本（你粘贴的内容）====",
+        rawInput || "",
+        "",
+        "==== 结束 ===="
+      ].join("\n");
+    }
+
+    // Settings dialog wiring
+    openSettingsBtn.addEventListener("click", () => {
+      loadSettings();
+      settingsDialog.showModal();
+    });
+    settingsDialog.addEventListener("close", () => {
+      // if saved, "returnValue" equals "ok" because save button is submit with value ok
+      if (settingsDialog.returnValue === "ok") {
+        saveSettings();
+        setMeta(statusEl, "设置已保存。", "ok");
+      }
+    });
+    clearSettingsBtn.addEventListener("click", () => {
+      clearSettings();
+      setMeta(statusEl, "已清除本地 API Key。", "ok");
+    });
+
+    presetXfyunBtn.addEventListener("click", () => {
+      apiBaseUrlInput.value = "https://maas-api.cn-huabei-1.xf-yun.com/v2";
+      if (!normalize(apiModelInput.value)) {
+        apiModelInput.value = "gpt-4o-mini";
+      }
+      apiNoteInput.value = "讯飞 MaaS v2 通常兼容 /chat/completions，鉴权一般为 Authorization: Bearer <APIKey>（把控制台给的 APIKey 整段粘贴即可）。";
+    });
+
+    presetOllamaBtn.addEventListener("click", () => {
+      apiBaseUrlInput.value = "http://127.0.0.1:11434/v1";
+      apiModelInput.value = normalize(apiModelInput.value) || "qwen2.5:7b-instruct";
+      apiKeyInput.value = "";
+      apiNoteInput.value = "Ollama 本地模型：无需 Key。先在本机启动 Ollama 并下载模型，然后用 /v1/chat/completions 调用。";
+    });
+
+    presetLMStudioBtn.addEventListener("click", () => {
+      apiBaseUrlInput.value = "http://127.0.0.1:1234/v1";
+      apiModelInput.value = normalize(apiModelInput.value) || "local-model";
+      apiKeyInput.value = "";
+      apiNoteInput.value = "LM Studio：开启 OpenAI Compatible Server 后，无需 Key。Base URL 通常是 http://127.0.0.1:1234/v1，model 填 LM Studio 显示的模型名。";
+    });
+
+    async function testModelConnection() {
+      // 先把当前输入框内容临时保存到 localStorage，避免用户忘记点“保存”
+      localStorage.setItem(STORAGE_KEYS.apiBaseUrl, normalize(apiBaseUrlInput.value) || "https://api.openai.com/v1");
+      localStorage.setItem(STORAGE_KEYS.apiModel, normalize(apiModelInput.value) || "gpt-4o-mini");
+      localStorage.setItem(STORAGE_KEYS.apiKey, normalize(apiKeyInput.value) || "");
+
+      const cfg = getClientConfig();
+      setMeta(settingsStatus, `测试中…（${cfg.baseUrl} / ${cfg.model}）`, "ok");
+      try {
+        const content = await callOpenAICompatible({
+          system: "你是一个连通性测试助手。只需要简短回答。",
+          user: "请回复 OK，并在下一行输出你认为当前使用的模型名（如果你知道）。",
+          temperature: 0,
+          maxTokens: 40
+        });
+        const preview = String(content || "").trim().slice(0, 120);
+        setMeta(settingsStatus, `连接成功。返回：${preview}`, "ok");
+      } catch (e) {
+        if (e?.code === "NO_API_KEY") {
+          setMeta(settingsStatus, "连接失败：未填写 API Key（如果你用的是本地模型 127.0.0.1，则 Key 可留空）。", "warn");
+          return;
+        }
+        if (e?.status) {
+          const details = String(e?.details || "").slice(0, 180).replaceAll("\n", " ");
+          setMeta(settingsStatus, `连接失败：HTTP ${e.status}。${details}`, "danger");
+          return;
+        }
+        setMeta(settingsStatus, `连接失败：${e?.message || "未知错误"}`, "danger");
+      }
+    }
+
+    testSettingsBtn.addEventListener("click", testModelConnection);
+
+    // Emotion feature wiring
+    emotionAnalyzeBtn.addEventListener("click", runEmotionAnalysis);
+    emotionClearBtn.addEventListener("click", () => {
+      emotionInput.value = "";
+      emotionResult.innerHTML = "";
+      setMeta(emotionStatus, "已清空。", "ok");
+    });
+    emotionCopyPromptBtn.addEventListener("click", () => {
+      const comments = normalize(emotionInput.value);
+      if (!comments) {
+        setMeta(emotionStatus, "请先粘贴一批用户评论。", "warn");
+        return;
+      }
+      const prompt = buildEmotionPrompt({
+        lang: emotionLangInput.value,
+        brand: emotionBrandInput.value,
+        rawComments: comments
+      });
+      copyTextToClipboard(wrapAsUserPastePrompt("情绪翻译官", prompt, comments), emotionStatus);
+    });
+
+    // Competitor feature wiring
+    compAnalyzeBtn.addEventListener("click", runCompetitorAnalysis);
+    compClearBtn.addEventListener("click", () => {
+      compInput.value = "";
+      compResult.innerHTML = "";
+      setMeta(compStatus, "已清空。", "ok");
+    });
+    compCopyPromptBtn.addEventListener("click", () => {
+      const raw = normalize(compInput.value);
+      if (!raw) {
+        setMeta(compStatus, "请先粘贴竞品公开信息。", "warn");
+        return;
+      }
+      const prompt = buildCompetitorPrompt({
+        country: compCountryInput.value,
+        product: compProductInput.value,
+        rawText: raw
+      });
+      copyTextToClipboard(wrapAsUserPastePrompt("竞品弱点雷达", prompt, raw), compStatus);
+    });
+
+    // Hotspots feature wiring
+    hotGenBtn.addEventListener("click", runHotspotGen);
+    hotCopyPromptBtn.addEventListener("click", () => {
+      const country = normalize(hotCountryInput.value);
+      if (!country) {
+        setMeta(hotStatus, "请先填写目标国家。", "warn");
+        return;
+      }
+      const prompt = buildHotspotPrompt({
+        country,
+        category: hotCategoryInput.value,
+        days: hotDaysSelect.value,
+        goal: hotGoalSelect.value
+      });
+      copyTextToClipboard(wrapAsUserPastePrompt("本土化热点日历", prompt, ""), hotStatus);
+    });
+
+    initTabs();
+    loadSettings();
+  </script>
+</body>
+</html>
