@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+  command = ""
+
+[build.environment]
+  # 在 Netlify 控制台中设置 ZHIPU_API_KEY 环境变量即可
+
+[functions]
+  directory = "netlify/functions"
+
+[dev]
+  functions = "netlify/functions"
